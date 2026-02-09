@@ -149,15 +149,15 @@ def generate_token(email):
     return serializer.dumps(email, salt=SECURITY_PASSWORD_SALT)
 
 # --- Routes ---
-@app.route('/')
+@application.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/about')
+@application.route('/about')
 def about():
     return render_template('about.html')
 
-@app.route('/support')
+@application.route('/support')
 def support():
     return render_template('support.html')
 
@@ -227,7 +227,7 @@ def submit_feedback():
     flash("Pulse recorded!")
     return redirect(url_for('dashboard'))
 
-@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+@application.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_with_token(token):
     email = confirm_token(token)
     if not email:
@@ -241,7 +241,7 @@ def reset_with_token(token):
 
     return render_template('reset_new_password.html', token=token)
 
-@app.route('/dashboard')
+@application.route('/dashboard')
 def dashboard():
     if 'user_email' not in session:
         return redirect(url_for('login'))
@@ -263,7 +263,7 @@ def dashboard():
                            feedbacks=all_feedbacks, 
                            movie_stats=movie_stats) 
 
-@app.route('/submit_feedback', methods=['POST']) 
+@application.route('/submit_feedback', methods=['POST']) 
 def submit_feedback():
     if 'user_email' not in session:
         return redirect(url_for('login'))
@@ -289,7 +289,7 @@ def submit_feedback():
     return redirect(url_for('dashboard'))
 
 
-@app.route('/logout')
+@application.route('/logout')
 def logout():
     session.pop('user_email', None)
     return redirect(url_for('index'))
