@@ -16,7 +16,7 @@ sns = boto3.client('sns', region_name=region)
 
 feedback_table = dynamodb.Table('CinemaFeedback')
 users_table = dynamodb.Table('CinemaUsers')
-SNS_TOPIC_ARN = os.environ.get('SNS_TOPIC_ARN') 
+SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:515966514202:CinemaPulse_topic' 
 
 SECURITY_PASSWORD_SALT = 'cinema-pulse-salt-secure'
 
