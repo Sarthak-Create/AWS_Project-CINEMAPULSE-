@@ -263,32 +263,6 @@ def dashboard():
                            feedbacks=all_feedbacks, 
                            movie_stats=movie_stats) 
 
-@application.route('/submit_feedback', methods=['POST']) 
-def submit_feedback():
-    if 'user_email' not in session:
-        return redirect(url_for('login'))
-    
-    
-    user_display_name = session['user_email'].split('@')[0].capitalize()
-
-    
-    rating_val = request.form.get('rating', 10) 
-
-    new_entry = Feedback(
-        user_name=user_display_name,
-        user_email=session['user_email'],
-        movie_title=request.form.get('movie_title'),
-        rating=int(rating_val),
-        vibe=request.form.get('vibe'),
-        comment=request.form.get('comment')
-    )
-    db.session.add(new_entry)
-    db.session.commit()
-    
-    flash("Pulse recorded! Thank you for sharing your vibe.")
-    return redirect(url_for('dashboard'))
-
-
 @application.route('/logout')
 def logout():
     session.pop('user_email', None)
