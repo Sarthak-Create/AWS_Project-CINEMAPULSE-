@@ -245,23 +245,35 @@ def reset_with_token(token):
 def dashboard():
     if 'user_email' not in session:
         return redirect(url_for('login'))
-    
-    all_feedbacks = Feedback.query.all()
+
+    response = feedback_table.scan()
+    all_feedbacks = response.get('Items', [])
+
     movie_stats = {}
-    
+
     for movie in MOVIES_DATA:
-        vibe_list = [f.vibe for f in all_feedbacks if f.movie_title == movie['title']]
-        total = len(vibe_list)
+        vibes = [
+            f['vibe']
+            for f in all_feedbacks
+            if f.get('movie_title') == movie['title']
+        ]
+        total = len(vibes)
+
         if total > 0:
-            counts = Counter(vibe_list)
-            movie_stats[movie['title']] = {vibe: (count / total) * 100 for vibe, count in counts.items()}
+            counts = Counter(vibes)
+            movie_stats[movie['title']] = {
+                vibe: round((count / total) * 100, 2)
+                for vibe, count in counts.items()
+            }
         else:
             movie_stats[movie['title']] = {}
 
-    return render_template('dashboard.html', 
-                           movies=MOVIES_DATA, 
-                           feedbacks=all_feedbacks, 
-                           movie_stats=movie_stats) 
+    return render_template(
+        'dashboard.html',
+        movies=MOVIES_DATA,
+        feedbacks=all_feedbacks,
+        movie_stats=movie_stats
+    ) 
 
 @application.route('/logout')
 def logout():
